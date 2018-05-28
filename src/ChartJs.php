@@ -658,6 +658,8 @@ class ChartJs
 
     public function setDataPointRadius(int $value, bool $all_datasets = false) { return $this->setDataSetting('pointRadius', $value, $all_datasets); }
 
+    public function setDataPointStyle(string $value, bool $all_datasets = false) { return $this->setDataSetting('pointStyle', $value, $all_datasets); }
+
     public function setDataPointHoverRadius(int $value, bool $all_datasets = false) { return $this->setDataSetting('pointHoverRadius', $value, $all_datasets); }
 
     public function setDataShowLine(int $value, bool $all_datasets = false) { return $this->setDataSetting('showLine', $value, $all_datasets); }
