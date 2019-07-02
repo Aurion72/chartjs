@@ -41,25 +41,28 @@ class ChartJs
 
     private $tooltips;
 
+    private $customs = [];
+
     private $static_function_attributes = [
-        'options.animation.onComplete' => 'animation',
-        'options.animation.onProgress' => 'animation',
-        'options.hover.onHover' => 'chart',
-        'options.legend.onClick' => 'chart',
-        'options.legend.labels.generateLabels' => 'chart',
-        'options.legend.onHover' => 'chart',
-        'options.tooltips.callbacks.afterBody' => 'tooltipItems, data',
-        'options.tooltips.callbacks.afterFooter' => 'tooltipItems, data',
-        'options.tooltips.callbacks.afterLabel' => 'tooltipItems, data',
-        'options.tooltips.callbacks.afterTitle' => 'tooltipItems, data',
-        'options.tooltips.callbacks.beforeBody' => 'tooltipItems, data',
+        'options.animation.onComplete'            => 'animation',
+        'options.animation.onProgress'            => 'animation',
+        'options.hover.onHover'                   => 'chart',
+        'options.legendCallback'                  => 'chart',
+        'options.legend.onClick'                  => 'chart',
+        'options.legend.labels.generateLabels'    => 'chart',
+        'options.legend.onHover'                  => 'chart',
+        'options.tooltips.callbacks.afterBody'    => 'tooltipItems, data',
+        'options.tooltips.callbacks.afterFooter'  => 'tooltipItems, data',
+        'options.tooltips.callbacks.afterLabel'   => 'tooltipItems, data',
+        'options.tooltips.callbacks.afterTitle'   => 'tooltipItems, data',
+        'options.tooltips.callbacks.beforeBody'   => 'tooltipItems, data',
         'options.tooltips.callbacks.beforeFooter' => 'tooltipItems, data',
-        'options.tooltips.callbacks.beforeLabel' => 'tooltipItems, data',
-        'options.tooltips.callbacks.beforeTitle' => 'tooltipItems, data',
-        'options.tooltips.callbacks.footer' => 'tooltipItems, data',
-        'options.tooltips.callbacks.label' => 'tooltipItems, data',
-        'options.tooltips.callbacks.labelColor' => 'tooltipItems, data',
-        'options.tooltips.callbacks.title' => 'tooltipItems, data',
+        'options.tooltips.callbacks.beforeLabel'  => 'tooltipItems, data',
+        'options.tooltips.callbacks.beforeTitle'  => 'tooltipItems, data',
+        'options.tooltips.callbacks.footer'       => 'tooltipItems, data',
+        'options.tooltips.callbacks.label'        => 'tooltipItems, data',
+        'options.tooltips.callbacks.labelColor'   => 'tooltipItems, data',
+        'options.tooltips.callbacks.title'        => 'tooltipItems, data',
     ];
 
     private $dynamic_function_attributes = [
@@ -198,7 +201,9 @@ class ChartJs
     {
 
         foreach ($this->scales as $axis => $ids) {
-            if (! is_array($ids)) continue;
+            if (!is_array($ids)) {
+                continue;
+            }
             foreach ($ids as $id => $values) {
 
                 if (isset($value['id'])) {
@@ -223,9 +228,13 @@ class ChartJs
         $raw_scales = $this->scales;
 
         foreach ($raw_scales as $key => $axis) {
-            if (! is_array($axis)) continue;
+            if (!is_array($axis)) {
+                continue;
+            }
             foreach ($axis as $k => $axis_id_array) {
-                if (in_array($axis_id_array['id'], $this->axes_without_id)) unset($axis_id_array['id']);
+                if (in_array($axis_id_array['id'], $this->axes_without_id)) {
+                    unset($axis_id_array['id']);
+                }
                 unset($axis[$k]);
                 $axis[] = $axis_id_array;
             }
@@ -240,26 +249,50 @@ class ChartJs
         return json_encode($this->getAnimation(), $escape_quotes ? JSON_HEX_QUOT : 0);
     }
 
-    public function getAnimation() { return $this->animation; }
+    public function getAnimation()
+    {
+        return $this->animation;
+    }
 
     public function getLegendJson($escape_quotes = false)
     {
         return json_encode($this->getLegend(), $escape_quotes ? JSON_HEX_QUOT : 0);
     }
 
-    public function getLegend() { return $this->legend; }
+    public function getLegend()
+    {
+        return $this->legend;
+    }
 
-    public function getElements() { return $this->elements; }
+    public function getElements()
+    {
+        return $this->elements;
+    }
 
-    public function getEvents() { return $this->events; }
+    public function getEvents()
+    {
+        return $this->events;
+    }
 
-    public function getHover() { return $this->hover; }
+    public function getHover()
+    {
+        return $this->hover;
+    }
 
-    public function getLayout() { return $this->layout; }
+    public function getLayout()
+    {
+        return $this->layout;
+    }
 
-    public function getPlugins() { return $this->plugins; }
+    public function getPlugins()
+    {
+        return $this->plugins;
+    }
 
-    public function getTitle() { return $this->title; }
+    public function getTitle()
+    {
+        return $this->title;
+    }
 
     private function convertFunctions(array $render_array)
     {
@@ -272,7 +305,7 @@ class ChartJs
         foreach ($function_attributes as $name => $parameters) {
 
             if (array_key_exists($name, $array_dot)) {
-                if (! $array_dot[$name]) {
+                if (!$array_dot[$name]) {
                     unset($array_dot[$name]);
                     continue;
                 } else {
@@ -293,7 +326,7 @@ class ChartJs
     private function generateFunctionAttributes(array $render_array)
     {
         $static_function_attributes = $this->static_function_attributes;
-        $dynamic_function_attributes = $this->dynamic_function_attributes; 
+        $dynamic_function_attributes = $this->dynamic_function_attributes;
 
         $new_dynamatic_pathes = [];
 
@@ -330,7 +363,9 @@ class ChartJs
     public function getLabels()
     {
         $labels = $this->labels;
-        if (count($labels) == 0) $labels = [''];
+        if (count($labels) == 0) {
+            $labels = [''];
+        }
 
         return $labels;
     }
@@ -360,14 +395,19 @@ class ChartJs
         return json_encode($this->getDatasets(), $escape_quotes ? JSON_HEX_QUOT : 0);
     }
 
+    public function getCustoms()
+    {
+        return $this->customs;
+    }
+
     public function getDatasets()
     {
         $raw_datasets = $this->datasets;
         foreach ($raw_datasets as $key => $dataset) {
             if ($this->use_same_color_background_and_border) {
-                if (isset($dataset['backgroundColor']) && ! isset($dataset['borderColor'])) {
+                if (isset($dataset['backgroundColor']) && !isset($dataset['borderColor'])) {
                     $dataset['borderColor'] = $dataset['backgroundColor'];
-                } elseif (isset($dataset['borderColor']) && ! isset($dataset['backgroundColor'])) {
+                } elseif (isset($dataset['borderColor']) && !isset($dataset['backgroundColor'])) {
                     $dataset['backgroundColor'] = $dataset['borderColor'];
                 } elseif (isset($dataset['backgroundColor']) && isset($dataset['borderColor'])) {
                     $dataset['borderColor'] = $dataset['backgroundColor'];
@@ -382,7 +422,10 @@ class ChartJs
         return $raw_datasets;
     }
 
-    public function getType() { return $this->type; }
+    public function getType()
+    {
+        return $this->type;
+    }
 
     public function setType(string $value)
     {
@@ -393,8 +436,12 @@ class ChartJs
 
     public function setDimensions(int $width = null, int $height = null)
     {
-        if ($width) $this->width = $width;
-        if ($height) $this->height = $height;
+        if ($width) {
+            $this->width = $width;
+        }
+        if ($height) {
+            $this->height = $height;
+        }
 
         return $this;
     }
@@ -424,13 +471,25 @@ class ChartJs
      * Animation
      * */
 
-    public function setAnimationDuration(float $value) { return $this->setting('animation', 'duration', $value); }
+    public function setAnimationDuration(float $value)
+    {
+        return $this->setting('animation', 'duration', $value);
+    }
 
-    public function setAnimationEasing(string $value) { return $this->setting('animation', 'easing', $value); }
+    public function setAnimationEasing(string $value)
+    {
+        return $this->setting('animation', 'easing', $value);
+    }
 
-    public function setAnimationOnCompleteCallback(string $value) { return $this->setting('animation', 'onComplete', $value); }
+    public function setAnimationOnCompleteCallback(string $value)
+    {
+        return $this->setting('animation', 'onComplete', $value);
+    }
 
-    public function setAnimationOnProgressCallback(string $value) { return $this->setting('animation', 'onProgress', $value); }
+    public function setAnimationOnProgressCallback(string $value)
+    {
+        return $this->setting('animation', 'onProgress', $value);
+    }
 
     /*
          * Axes
@@ -438,7 +497,9 @@ class ChartJs
 
     public function setCurrentAxis($axis, $id = null)
     {
-        if (! strstr($axis, 'Axes')) $axis = $axis.'Axes';
+        if (!strstr($axis, 'Axes')) {
+            $axis = $axis.'Axes';
+        }
         $this->current_axis = $axis;
 
         if (count($this->axes_ids[$this->current_axis]) == 0) {
@@ -457,10 +518,14 @@ class ChartJs
             $this->axes_without_id[] = $id;
         }
 
-        if (in_array($id, $this->axes_ids[$this->current_axis])) return $this;
+        if (in_array($id, $this->axes_ids[$this->current_axis])) {
+            return $this;
+        }
         $this->axes_ids[$this->current_axis][] = $id;
         $this->scales[$this->current_axis][$id] = ['id' => $id];
-        if ($set_current) $this->setCurrentAxisId($id);
+        if ($set_current) {
+            $this->setCurrentAxisId($id);
+        }
 
         return $this;
     }
@@ -468,10 +533,10 @@ class ChartJs
     public function setCurrentAxisId($id = null)
     {
         $selected_id = null;
-        if (! is_null($id) && in_array($id, $this->axes_ids[$this->current_axis])) {
+        if (!is_null($id) && in_array($id, $this->axes_ids[$this->current_axis])) {
             $selected_id = $id;
         } elseif (count($this->axes_ids[$this->current_axis]) > 0) {
-            $selected_id = $this->axes_ids[$this->current_axis][0];
+            $selected_id = array_first($this->axes_ids[$this->current_axis]);
         }
 
         $this->current_axis_id = $selected_id;
@@ -481,7 +546,9 @@ class ChartJs
 
     private function setAxisSetting($attribute, $value)
     {
-        if (is_null($this->current_axis_id)) return $this;
+        if (is_null($this->current_axis_id)) {
+            return $this;
+        }
 
         return $this->setting('scales', $this->axisAttributePath($attribute), $value);
     }
@@ -491,7 +558,9 @@ class ChartJs
         $old_id = $this->current_axis_id;
 
         /* The old id no longer exists and now has its own id */
-        if (in_array($old_id, $this->axes_without_id)) unset($this->axes_without_id[array_search($old_id, $this->axes_without_id)]);
+        if (in_array($old_id, $this->axes_without_id)) {
+            unset($this->axes_without_id[array_search($old_id, $this->axes_without_id)]);
+        }
 
         /* The new value replace the old */
         if (in_array($old_id, $this->axes_ids[$this->current_axis])) {
@@ -509,17 +578,35 @@ class ChartJs
         return $this->setAxisSetting('id', $id);
     }
 
-    public function setAxisStacked(bool $value) { return $this->setAxisSetting('stacked', $value); }
+    public function setAxisStacked(bool $value)
+    {
+        return $this->setAxisSetting('stacked', $value);
+    }
 
-    public function setAxisId($value) { return $this->modifyExistingAxisId($value); }
+    public function setAxisId($value)
+    {
+        return $this->modifyExistingAxisId($value);
+    }
 
-    public function setAxisDisplay(bool $value) { return $this->setAxisSetting('display', $value); }
+    public function setAxisDisplay(bool $value)
+    {
+        return $this->setAxisSetting('display', $value);
+    }
 
-    public function setAxisType(string $value) { return $this->setAxisSetting('type', $value); }
+    public function setAxisType(string $value)
+    {
+        return $this->setAxisSetting('type', $value);
+    }
 
-    public function setAxisCategoryPercentage(float $value) { return $this->setAxisSetting('categoryPercentage', $value); }
+    public function setAxisCategoryPercentage(float $value)
+    {
+        return $this->setAxisSetting('categoryPercentage', $value);
+    }
 
-    public function setAxisPosition(string $value) { return $this->setAxisSetting('position', $value); }
+    public function setAxisPosition(string $value)
+    {
+        return $this->setAxisSetting('position', $value);
+    }
 
     private function axisAttributePath($attribute)
     {
@@ -530,47 +617,98 @@ class ChartJs
      * Axis Ticks
      * */
 
-    public function setAxisTicksFontSize(int $value) { return $this->setAxisSetting('ticks.fontSize', $value); }
+    public function setAxisTicksFontSize(int $value)
+    {
+        return $this->setAxisSetting('ticks.fontSize', $value);
+    }
 
-    public function setAxisTicksMin(int $value) { return $this->setAxisSetting('ticks.min', $value); }
+    public function setAxisTicksMin(int $value)
+    {
+        return $this->setAxisSetting('ticks.min', $value);
+    }
 
-    public function setAxisTicksBeginAtZero(bool $value) { return $this->setAxisSetting('ticks.beginAtZero', $value); }
+    public function setAxisTicksBeginAtZero(bool $value)
+    {
+        return $this->setAxisSetting('ticks.beginAtZero', $value);
+    }
 
-    public function setAxisTicksSuggestedMin(float $value) { return $this->setAxisSetting('ticks.suggestedMin', $value); }
+    public function setAxisTicksSuggestedMin(float $value)
+    {
+        return $this->setAxisSetting('ticks.suggestedMin', $value);
+    }
 
-    public function setAxisTicksAutoSkipPadding(float $value) { return $this->setAxisSetting('ticks.autoSkipPadding', $value); }
+    public function setAxisTicksAutoSkipPadding(float $value)
+    {
+        return $this->setAxisSetting('ticks.autoSkipPadding', $value);
+    }
 
-    public function setAxisTicksPadding(float $value) { return $this->setAxisSetting('ticks.padding', $value); }
+    public function setAxisTicksPadding(float $value)
+    {
+        return $this->setAxisSetting('ticks.padding', $value);
+    }
 
-    public function setAxisTicksMax(int $value) { return $this->setAxisSetting('ticks.max', $value); }
+    public function setAxisTicksMax(int $value)
+    {
+        return $this->setAxisSetting('ticks.max', $value);
+    }
 
-    public function setAxisTicksStepSize(float $value) { return $this->setAxisSetting('ticks.stepSize', $value); }
+    public function setAxisTicksStepSize(float $value)
+    {
+        return $this->setAxisSetting('ticks.stepSize', $value);
+    }
 
-    public function setAxisTicksFontColor(string $value) { return $this->setAxisSetting('ticks.fontColor', $value); }
+    public function setAxisTicksFontColor(string $value)
+    {
+        return $this->setAxisSetting('ticks.fontColor', $value);
+    }
 
-    public function setAxisTicksAutoSkip(bool $value) { return $this->setAxisSetting('ticks.autoSkip', $value); }
+    public function setAxisTicksAutoSkip(bool $value)
+    {
+        return $this->setAxisSetting('ticks.autoSkip', $value);
+    }
 
-    public function setAxisTicksCallback(string $value) { return $this->setAxisSetting('ticks.callback', $value); }
+    public function setAxisTicksCallback(string $value)
+    {
+        return $this->setAxisSetting('ticks.callback', $value);
+    }
 
     /*
      * Axis GridLine
      * */
 
-    public function setAxisGridLinesColor(string $value) { return $this->setAxisSetting('gridLines.color', $value); }
+    public function setAxisGridLinesColor(string $value)
+    {
+        return $this->setAxisSetting('gridLines.color', $value);
+    }
 
-    public function setAxisGridLinesTickMarkLength(float $value) { return $this->setAxisSetting('gridLines.tickMarkLength', $value); }
+    public function setAxisGridLinesTickMarkLength(float $value)
+    {
+        return $this->setAxisSetting('gridLines.tickMarkLength', $value);
+    }
 
-    public function setAxisGridLinesZeroLineColor(string $value) { return $this->setAxisSetting('gridLines.zeroLineColor', $value); }
+    public function setAxisGridLinesZeroLineColor(string $value)
+    {
+        return $this->setAxisSetting('gridLines.zeroLineColor', $value);
+    }
 
     /*
      * Axis GridLine
      * */
 
-    public function setAxisScaleLabelDisplay(bool $value) { return $this->setAxisSetting('scaleLabel.display', $value); }
+    public function setAxisScaleLabelDisplay(bool $value)
+    {
+        return $this->setAxisSetting('scaleLabel.display', $value);
+    }
 
-    public function setAxisScaleLabelLabelString(string $value) { return $this->setAxisSetting('scaleLabel.labelString', $value); }
+    public function setAxisScaleLabelLabelString(string $value)
+    {
+        return $this->setAxisSetting('scaleLabel.labelString', $value);
+    }
 
-    public function setAxisScaleLabelLineHeight(float $value) { return $this->setAxisSetting('scaleLabel.lineHeight', $value); }
+    public function setAxisScaleLabelLineHeight(float $value)
+    {
+        return $this->setAxisSetting('scaleLabel.lineHeight', $value);
+    }
 
     /*
     * Datasets
@@ -578,14 +716,16 @@ class ChartJs
 
     private function datasetAttributePath($attribute, $id = null)
     {
-        if (is_null($id)) $id = $this->current_dataset_id;
+        if (is_null($id)) {
+            $id = $this->current_dataset_id;
+        }
 
         return $id.'.'.$attribute;
     }
 
     private function setDataSetting($attribute, $value, bool $all_datasets = false)
     {
-        if (! $all_datasets) {
+        if (!$all_datasets) {
             $this->setting('datasets', $this->datasetAttributePath($attribute), $value);
         } else {
             foreach ($this->datasets as $key => $i) {
@@ -607,11 +747,17 @@ class ChartJs
     {
         if (is_null($id)) {
             $id = uniqid();
-            if ($use_id_as_label === true) $use_id_as_label = false;
+            if ($use_id_as_label === true) {
+                $use_id_as_label = false;
+            }
         }
-        if (! is_object($data) && ! is_array($data)) $data = [$data];
+        if (!is_object($data) && !is_array($data)) {
+            $data = [$data];
+        }
         $this->datasets[$id] = ['data' => $data];
-        if ($use_id_as_label) $this->datasets[$id]['label'] = is_string($use_id_as_label) ? $use_id_as_label : $id;
+        if ($use_id_as_label) {
+            $this->datasets[$id]['label'] = is_string($use_id_as_label) ? $use_id_as_label : $id;
+        }
 
         $this->setCurrentDatasetId($id);
 
@@ -625,7 +771,10 @@ class ChartJs
         return $this;
     }
 
-    public function setDataType(string $value, bool $all_datasets = false) { return $this->setDataSetting('type', $value, $all_datasets); }
+    public function setDataType(string $value, bool $all_datasets = false)
+    {
+        return $this->setDataSetting('type', $value, $all_datasets);
+    }
 
     public function setDataLabel(string $value, bool $all_datasets = false)
     {
@@ -642,106 +791,243 @@ class ChartJs
         return $this->setDataSetting('data', $value);
     }
 
-    public function setDataYAxisId($value, bool $all_datasets = false) { return $this->setDataSetting('yAxisID', $value, $all_datasets); }
+    public function setDataYAxisId($value, bool $all_datasets = false)
+    {
+        return $this->setDataSetting('yAxisID', $value, $all_datasets);
+    }
 
-    public function setDataXAxisId($value, bool $all_datasets = false) { return $this->setDataSetting('xAxisID', $value, $all_datasets); }
+    public function setDataXAxisId($value, bool $all_datasets = false)
+    {
+        return $this->setDataSetting('xAxisID', $value, $all_datasets);
+    }
 
-    public function setDataHoverBackgroundColor(string $value, bool $all_datasets = false) { return $this->setDataSetting('hoverBackgroundColor', $value, $all_datasets); }
+    public function setDataHoverBackgroundColor(string $value, bool $all_datasets = false)
+    {
+        return $this->setDataSetting('hoverBackgroundColor', $value, $all_datasets);
+    }
 
-    public function setDataHoverBorderColor(string $value, bool $all_datasets = false) { return $this->setDataSetting('hoverBorderColor', $value, $all_datasets); }
+    public function setDataHoverBorderColor(string $value, bool $all_datasets = false)
+    {
+        return $this->setDataSetting('hoverBorderColor', $value, $all_datasets);
+    }
 
-    public function setDataHoverBorderWidth(string $value, bool $all_datasets = false) { return $this->setDataSetting('hoverBorderWidth', $value, $all_datasets); }
+    public function setDataHoverBorderWidth(string $value, bool $all_datasets = false)
+    {
+        return $this->setDataSetting('hoverBorderWidth', $value, $all_datasets);
+    }
 
-    public function setDataBorderWidth(int $value, bool $all_datasets = false) { return $this->setDataSetting('borderWidth', $value, $all_datasets); }
+    public function setDataBorderWidth(int $value, bool $all_datasets = false)
+    {
+        return $this->setDataSetting('borderWidth', $value, $all_datasets);
+    }
 
-    public function setDataBorderSkipped(int $value, bool $all_datasets = false) { return $this->setDataSetting('borderSkipped', $value, $all_datasets); }
+    public function setDataBorderSkipped(int $value, bool $all_datasets = false)
+    {
+        return $this->setDataSetting('borderSkipped', $value, $all_datasets);
+    }
 
-    public function setDataPointRadius(int $value, bool $all_datasets = false) { return $this->setDataSetting('pointRadius', $value, $all_datasets); }
+    public function setDataPointRadius(int $value, bool $all_datasets = false)
+    {
+        return $this->setDataSetting('pointRadius', $value, $all_datasets);
+    }
 
-    public function setDataPointStyle(string $value, bool $all_datasets = false) { return $this->setDataSetting('pointStyle', $value, $all_datasets); } 
+    public function setDataPointStyle(string $value, bool $all_datasets = false)
+    {
+        return $this->setDataSetting('pointStyle', $value, $all_datasets);
+    }
 
-    public function setDataPointHoverRadius(int $value, bool $all_datasets = false) { return $this->setDataSetting('pointHoverRadius', $value, $all_datasets); }
+    public function setDataPointHoverRadius(int $value, bool $all_datasets = false)
+    {
+        return $this->setDataSetting('pointHoverRadius', $value, $all_datasets);
+    }
 
-    public function setDataShowLine(int $value, bool $all_datasets = false) { return $this->setDataSetting('showLine', $value, $all_datasets); }
+    public function setDataShowLine(int $value, bool $all_datasets = false)
+    {
+        return $this->setDataSetting('showLine', $value, $all_datasets);
+    }
 
-    public function setDataLineTension(int $value, bool $all_datasets = false) { return $this->setDataSetting('lineTension', $value, $all_datasets); }
+    public function setDataLineTension(int $value, bool $all_datasets = false)
+    {
+        return $this->setDataSetting('lineTension', $value, $all_datasets);
+    }
 
-    public function setDataFill(bool $value, bool $all_datasets = false) { return $this->setDataSetting('fill', $value, $all_datasets); }
+    public function setDataFill(bool $value, bool $all_datasets = false)
+    {
+        return $this->setDataSetting('fill', $value, $all_datasets);
+    }
 
-    public function setDataSpanGaps(bool $value, bool $all_datasets = false) { return $this->setDataSetting('spanGaps', $value, $all_datasets); }
+    public function setDataSpanGaps(bool $value, bool $all_datasets = false)
+    {
+        return $this->setDataSetting('spanGaps', $value, $all_datasets);
+    }
 
-    public function setDataBorderColor(string $value, bool $all_datasets = false) { return $this->setDataSetting('borderColor', $value, $all_datasets); }
+    public function setDataBorderColor(string $value, bool $all_datasets = false)
+    {
+        return $this->setDataSetting('borderColor', $value, $all_datasets);
+    }
 
     public function setDataBackgroundColor($value = null, bool $all_datasets = false)
     {
-        if (! $value) $value = $this->default_charts_colors;
+        if (!$value) {
+            $value = $this->default_charts_colors;
+        }
 
         return $this->setDataSetting('backgroundColor', $value, $all_datasets);
     }
 
-    public function setDataColor(string $value, bool $all_datasets = false) { return $this->setDataSetting('color', $value, $all_datasets); }
+    public function setDataColor(string $value, bool $all_datasets = false)
+    {
+        return $this->setDataSetting('color', $value, $all_datasets);
+    }
 
-    public function setDataPointColor(string $value, bool $all_datasets = false) { return $this->setDataSetting('pointColor', $value, $all_datasets); }
+    public function setDataPointColor(string $value, bool $all_datasets = false)
+    {
+        return $this->setDataSetting('pointColor', $value, $all_datasets);
+    }
 
-    public function setDataPointStrokeColor(string $value, bool $all_datasets = false) { return $this->setDataSetting('pointStrokeColor', $value, $all_datasets); }
+    public function setDataPointStrokeColor(string $value, bool $all_datasets = false)
+    {
+        return $this->setDataSetting('pointStrokeColor', $value, $all_datasets);
+    }
 
-    public function setDataPointHighlightFill(string $value, bool $all_datasets = false) { return $this->setDataSetting('pointHighlightFill', $value, $all_datasets); }
+    public function setDataPointHighlightFill(string $value, bool $all_datasets = false)
+    {
+        return $this->setDataSetting('pointHighlightFill', $value, $all_datasets);
+    }
 
-    public function setDataPointHighlightStroke(string $value, bool $all_datasets = false) { return $this->setDataSetting('pointHighlightStroke', $value, $all_datasets); }
+    public function setDataPointHighlightStroke(string $value, bool $all_datasets = false)
+    {
+        return $this->setDataSetting('pointHighlightStroke', $value, $all_datasets);
+    }
 
     /*
      * Elements
      * */
 
-    public function setElementsArcBackgroundColor(string $value) { return $this->setting('elements', 'arc.backgroundColor', $value); }
+    public function setElementsArcBackgroundColor(string $value)
+    {
+        return $this->setting('elements', 'arc.backgroundColor', $value);
+    }
 
-    public function setElementsArcBorderColor(string $value) { return $this->setting('elements', 'arc.borderColor', $value); }
+    public function setElementsArcBorderColor(string $value)
+    {
+        return $this->setting('elements', 'arc.borderColor', $value);
+    }
 
-    public function setElementsArcBorderWidth(float $value) { return $this->setting('elements', 'arc.borderWidth', $value); }
+    public function setElementsArcBorderWidth(float $value)
+    {
+        return $this->setting('elements', 'arc.borderWidth', $value);
+    }
 
-    public function setElementsLineBackgroundColor(string $value) { return $this->setting('elements', 'line.backgroundColor', $value); }
+    public function setElementsLineBackgroundColor(string $value)
+    {
+        return $this->setting('elements', 'line.backgroundColor', $value);
+    }
 
-    public function setElementsLineBorderCapStyle(string $value) { return $this->setting('elements', 'line.borderCapStyle', $value); }
+    public function setElementsLineBorderCapStyle(string $value)
+    {
+        return $this->setting('elements', 'line.borderCapStyle', $value);
+    }
 
-    public function setElementsLineBorderColor(string $value) { return $this->setting('elements', 'line.borderColor', $value); }
+    public function setElementsLineBorderColor(string $value)
+    {
+        return $this->setting('elements', 'line.borderColor', $value);
+    }
 
-    public function setElementsLineBorderDash(array $value) { return $this->setting('elements', 'line.borderDash', $value); }
+    public function setElementsLineBorderDash(array $value)
+    {
+        return $this->setting('elements', 'line.borderDash', $value);
+    }
 
-    public function setElementsLineBorderDashOffset(float $value) { return $this->setting('elements', 'line.borderDashOffset', $value); }
+    public function setElementsLineBorderDashOffset(float $value)
+    {
+        return $this->setting('elements', 'line.borderDashOffset', $value);
+    }
 
-    public function setElementsLineBorderJoinStyle(string $value) { return $this->setting('elements', 'line.borderJoinStyle', $value); }
+    public function setElementsLineBorderJoinStyle(string $value)
+    {
+        return $this->setting('elements', 'line.borderJoinStyle', $value);
+    }
 
-    public function setElementsLineBorderWidth(float $value) { return $this->setting('elements', 'line.borderWidth', $value); }
+    public function setElementsLineBorderWidth(float $value)
+    {
+        return $this->setting('elements', 'line.borderWidth', $value);
+    }
 
-    public function setElementsLineCapBezierPoints(bool $value) { return $this->setting('elements', 'line.capBezierPoints', $value); }
+    public function setElementsLineCapBezierPoints(bool $value)
+    {
+        return $this->setting('elements', 'line.capBezierPoints', $value);
+    }
 
-    public function setElementsLineFill(bool $value) { return $this->setting('elements', 'line.fill', $value); }
+    public function setElementsLineFill(bool $value)
+    {
+        return $this->setting('elements', 'line.fill', $value);
+    }
 
-    public function setElementsLineTension(float $value) { return $this->setting('elements', 'line.tension', $value); }
+    public function setElementsLineTension(float $value)
+    {
+        return $this->setting('elements', 'line.tension', $value);
+    }
 
-    public function setElementsPointBackgroundColor(string $value) { return $this->setting('elements', 'point.backgroundColor', $value); }
+    public function setElementsPointBackgroundColor(string $value)
+    {
+        return $this->setting('elements', 'point.backgroundColor', $value);
+    }
 
-    public function setElementsPointBorderColor(string $value) { return $this->setting('elements', 'point.borderColor', $value); }
+    public function setElementsPointBorderColor(string $value)
+    {
+        return $this->setting('elements', 'point.borderColor', $value);
+    }
 
-    public function setElementsPointBorderWidth(float $value) { return $this->setting('elements', 'point.borderWidth', $value); }
+    public function setElementsPointBorderWidth(float $value)
+    {
+        return $this->setting('elements', 'point.borderWidth', $value);
+    }
 
-    public function setElementsPointHitRadius(float $value) { return $this->setting('elements', 'point.hitRadius', $value); }
+    public function setElementsPointHitRadius(float $value)
+    {
+        return $this->setting('elements', 'point.hitRadius', $value);
+    }
 
-    public function setElementsPointHoverBorderWidth(float $value) { return $this->setting('elements', 'point.hoverBorderWidth', $value); }
+    public function setElementsPointHoverBorderWidth(float $value)
+    {
+        return $this->setting('elements', 'point.hoverBorderWidth', $value);
+    }
 
-    public function setElementsPointHoverRadius(float $value) { return $this->setting('elements', 'point.hoverRadius', $value); }
+    public function setElementsPointHoverRadius(float $value)
+    {
+        return $this->setting('elements', 'point.hoverRadius', $value);
+    }
 
-    public function setElementsPointPointStyle($value) { return $this->setting('elements', 'point.pointStyle', $value); }
+    public function setElementsPointPointStyle($value)
+    {
+        return $this->setting('elements', 'point.pointStyle', $value);
+    }
 
-    public function setElementsPointRadius(float $value) { return $this->setting('elements', 'point.radius', $value); }
+    public function setElementsPointRadius(float $value)
+    {
+        return $this->setting('elements', 'point.radius', $value);
+    }
 
-    public function setElementsRectangleBackgroundColor(string $value) { return $this->setting('elements', 'rectangle.backgroundColor', $value); }
+    public function setElementsRectangleBackgroundColor(string $value)
+    {
+        return $this->setting('elements', 'rectangle.backgroundColor', $value);
+    }
 
-    public function setElementsRectangleBorderColor(string $value) { return $this->setting('elements', 'rectangle.borderColor', $value); }
+    public function setElementsRectangleBorderColor(string $value)
+    {
+        return $this->setting('elements', 'rectangle.borderColor', $value);
+    }
 
-    public function setElementsRectangleBorderSkipped(float $value) { return $this->setting('elements', 'rectangle.borderSkipped', $value); }
+    public function setElementsRectangleBorderSkipped(float $value)
+    {
+        return $this->setting('elements', 'rectangle.borderSkipped', $value);
+    }
 
-    public function setElementsRectangleBorderWidth(float $value) { return $this->setting('elements', 'rectangle.borderWidth', $value); }
+    public function setElementsRectangleBorderWidth(float $value)
+    {
+        return $this->setting('elements', 'rectangle.borderWidth', $value);
+    }
 
     /*
      * Events
@@ -749,14 +1035,18 @@ class ChartJs
 
     public function addEvent($event)
     {
-        if (! in_array($event, $this->getEvents())) $this->events[] = $event;
+        if (!in_array($event, $this->getEvents())) {
+            $this->events[] = $event;
+        }
 
         return $this;
     }
 
     public function removeEvent($event)
     {
-        if ($this->getEvents($event) !== false) unset($this->events[$event]);
+        if ($this->getEvents($event) !== false) {
+            unset($this->events[$event]);
+        }
 
         return $this;
     }
@@ -765,13 +1055,25 @@ class ChartJs
      * Hover
      * */
 
-    public function setHoverAnimationDuration(int $value) { return $this->setting('hover', 'animationDuration', $value); }
+    public function setHoverAnimationDuration(int $value)
+    {
+        return $this->setting('hover', 'animationDuration', $value);
+    }
 
-    public function setHoverIntersect(bool $value) { return $this->setting('hover', 'intersect', $value); }
+    public function setHoverIntersect(bool $value)
+    {
+        return $this->setting('hover', 'intersect', $value);
+    }
 
-    public function setHoverMode(string $value) { return $this->setting('hover', 'mode', $value); }
+    public function setHoverMode(string $value)
+    {
+        return $this->setting('hover', 'mode', $value);
+    }
 
-    public function setHoverOnHover(string $value) { return $this->setting('hover', 'onHover', $value); }
+    public function setHoverOnHover(string $value)
+    {
+        return $this->setting('hover', 'onHover', $value);
+    }
 
     /*
     * Labels
@@ -799,63 +1101,132 @@ class ChartJs
      * Legend
      * */
 
-    public function setLayoutPadding(float $value) { return $this->setting('layout', 'padding', $value); }
+    public function setLayoutPadding(float $value)
+    {
+        return $this->setting('layout', 'padding', $value);
+    }
 
-    public function setLayoutPaddingLeft(float $value) { return $this->setting('layout', 'padding.left', $value); }
+    public function setLayoutPaddingLeft(float $value)
+    {
+        return $this->setting('layout', 'padding.left', $value);
+    }
 
-    public function setLayoutPaddingTop(float $value) { return $this->setting('layout', 'padding.top', $value); }
+    public function setLayoutPaddingTop(float $value)
+    {
+        return $this->setting('layout', 'padding.top', $value);
+    }
 
-    public function setLayoutPaddingRight(float $value) { return $this->setting('layout', 'padding.right', $value); }
+    public function setLayoutPaddingRight(float $value)
+    {
+        return $this->setting('layout', 'padding.right', $value);
+    }
 
-    public function setLayoutPaddingBottom(float $value) { return $this->setting('layout', 'padding.bottom', $value); }
+    public function setLayoutPaddingBottom(float $value)
+    {
+        return $this->setting('layout', 'padding.bottom', $value);
+    }
 
     /*
      * Legend
      * */
 
-    public function setLegendDisplay(bool $value) { return $this->setting('legend', 'display', $value); }
+    public function setLegendDisplay(bool $value)
+    {
+        return $this->setting('legend', 'display', $value);
+    }
 
-    public function setLegendFullWidth(bool $value) { return $this->setting('legend', 'fullWidth', $value); }
+    public function setLegendFullWidth(bool $value)
+    {
+        return $this->setting('legend', 'fullWidth', $value);
+    }
 
-    public function setLegendLabelsBoxWidth(float $value) { return $this->setting('legend', 'labels.boxWidth', $value); }
+    public function setLegendLabelsBoxWidth(float $value)
+    {
+        return $this->setting('legend', 'labels.boxWidth', $value);
+    }
 
-    public function setLegendLabelsGenerateLabels(string $value) { return $this->setting('legend', 'labels.generateLabels', $value); }
+    public function setLegendLabelsGenerateLabels(string $value)
+    {
+        return $this->setting('legend', 'labels.generateLabels', $value);
+    }
 
-    public function setLegendLabelsPadding(float $value) { return $this->setting('legend', 'labels.padding', $value); }
+    public function setLegendLabelsPadding(float $value)
+    {
+        return $this->setting('legend', 'labels.padding', $value);
+    }
 
-    public function setLegendPosition(string $value) { return $this->setting('legend', 'position', $value); }
+    public function setLegendPosition(string $value)
+    {
+        return $this->setting('legend', 'position', $value);
+    }
 
-    public function setLegendOnClick(string $value) { return $this->setting('legend', 'onClick', $value); }
+    public function setLegendOnClick(string $value)
+    {
+        return $this->setting('legend', 'onClick', $value);
+    }
 
-    public function setLegendOnHover(string $value) { return $this->setting('legend', 'onHover', $value); }
+    public function setLegendOnHover(string $value)
+    {
+        return $this->setting('legend', 'onHover', $value);
+    }
 
-    public function setLegendReverse(bool $value) { return $this->setting('legend', 'reverse', $value); }
+    public function setLegendReverse(bool $value)
+    {
+        return $this->setting('legend', 'reverse', $value);
+    }
 
-    public function setLegendWeight(float $value) { return $this->setting('legend', 'weight', $value); }
+    public function setLegendWeight(float $value)
+    {
+        return $this->setting('legend', 'weight', $value);
+    }
 
     /*
      * Plugins
      * */
 
-    public function setPluginsSettings($key, $value) { return $this->setting('plugins', $key, $value); }
+    public function setPluginsSettings($key, $value)
+    {
+        return $this->setting('plugins', $key, $value);
+    }
 
     /*
      * Title
      * */
 
-    public function setTitleDisplay(bool $value) { return $this->setting('title', 'display', $value); }
+    public function setTitleDisplay(bool $value)
+    {
+        return $this->setting('title', 'display', $value);
+    }
 
-    public function setTitleFontStyle(string $value) { return $this->setting('title', 'fontStyle', $value); }
+    public function setTitleFontStyle(string $value)
+    {
+        return $this->setting('title', 'fontStyle', $value);
+    }
 
-    public function setTitleFullWidth(bool $value) { return $this->setting('title', 'fullWidth', $value); }
+    public function setTitleFullWidth(bool $value)
+    {
+        return $this->setting('title', 'fullWidth', $value);
+    }
 
-    public function setTitlePadding(float $value) { return $this->setting('title', 'padding', $value); }
+    public function setTitlePadding(float $value)
+    {
+        return $this->setting('title', 'padding', $value);
+    }
 
-    public function setTitlePosition(string $value) { return $this->setting('title', 'position', $value); }
+    public function setTitlePosition(string $value)
+    {
+        return $this->setting('title', 'position', $value);
+    }
 
-    public function setTitleText(bool $value) { return $this->setting('title', 'text', $value); }
+    public function setTitleText(bool $value)
+    {
+        return $this->setting('title', 'text', $value);
+    }
 
-    public function setTitleWeight(bool $value) { return $this->setting('title', 'weight', $value); }
+    public function setTitleWeight(bool $value)
+    {
+        return $this->setting('title', 'weight', $value);
+    }
 
     /*
      * Tooltips
@@ -874,95 +1245,239 @@ class ChartJs
         return $this;
     }
 
-    public function setTooltipsbackgroundColor(string $value) { return $this->setting('tooltips', 'backgroundColor', $value); }
+    public function setTooltipsbackgroundColor(string $value)
+    {
+        return $this->setting('tooltips', 'backgroundColor', $value);
+    }
 
-    public function setTooltipsbodyAlign(string $value) { return $this->setting('tooltips', 'bodyAlign', $value); }
+    public function setTooltipsbodyAlign(string $value)
+    {
+        return $this->setting('tooltips', 'bodyAlign', $value);
+    }
 
-    public function setTooltipsbodyFontColor(string $value) { return $this->setting('tooltips', 'bodyFontColor', $value); }
+    public function setTooltipsbodyFontColor(string $value)
+    {
+        return $this->setting('tooltips', 'bodyFontColor', $value);
+    }
 
-    public function setTooltipsBodyFontSize(string $value) { return $this->setting('tooltips', 'bodyFontSize', $value); }
+    public function setTooltipsBodyFontSize(string $value)
+    {
+        return $this->setting('tooltips', 'bodyFontSize', $value);
+    }
 
-    public function setTooltipsBodySpacing(string $value) { return $this->setting('tooltips', 'bodySpacing', $value); }
+    public function setTooltipsBodySpacing(string $value)
+    {
+        return $this->setting('tooltips', 'bodySpacing', $value);
+    }
 
-    public function setTooltipsBorderColor(string $value) { return $this->setting('tooltips', 'borderColor', $value); }
+    public function setTooltipsBorderColor(string $value)
+    {
+        return $this->setting('tooltips', 'borderColor', $value);
+    }
 
-    public function setTooltipsBorderWidth(string $value) { return $this->setting('tooltips', 'borderWidth', $value); }
+    public function setTooltipsBorderWidth(string $value)
+    {
+        return $this->setting('tooltips', 'borderWidth', $value);
+    }
 
-    public function setTooltipsCallbacksAfterBody(string $value) { return $this->setting('tooltips', 'callbacks.afterBody', $value); }
+    public function setTooltipsCallbacksAfterBody(string $value)
+    {
+        return $this->setting('tooltips', 'callbacks.afterBody', $value);
+    }
 
-    public function setTooltipsCallbacksAfterFooter(string $value) { return $this->setting('tooltips', 'callbacks.afterFooter', $value); }
+    public function setTooltipsCallbacksAfterFooter(string $value)
+    {
+        return $this->setting('tooltips', 'callbacks.afterFooter', $value);
+    }
 
-    public function setTooltipsCallbacksAfterLabel(string $value) { return $this->setting('tooltips', 'callbacks.afterLabel', $value); }
+    public function setTooltipsCallbacksAfterLabel(string $value)
+    {
+        return $this->setting('tooltips', 'callbacks.afterLabel', $value);
+    }
 
-    public function setTooltipsCallbacksAfterTitle(string $value) { return $this->setting('tooltips', 'callbacks.afterTitle', $value); }
+    public function setTooltipsCallbacksAfterTitle(string $value)
+    {
+        return $this->setting('tooltips', 'callbacks.afterTitle', $value);
+    }
 
-    public function setTooltipsCallbacksBeforeBody(string $value) { return $this->setting('tooltips', 'callbacks.beforeBody', $value); }
+    public function setTooltipsCallbacksBeforeBody(string $value)
+    {
+        return $this->setting('tooltips', 'callbacks.beforeBody', $value);
+    }
 
-    public function setTooltipsCallbacksBeforeFooter(string $value) { return $this->setting('tooltips', 'callbacks.beforeFooter', $value); }
+    public function setTooltipsCallbacksBeforeFooter(string $value)
+    {
+        return $this->setting('tooltips', 'callbacks.beforeFooter', $value);
+    }
 
-    public function setTooltipsCallbacksBeforeLabel(string $value) { return $this->setting('tooltips', 'callbacks.beforeLabel', $value); }
+    public function setTooltipsCallbacksBeforeLabel(string $value)
+    {
+        return $this->setting('tooltips', 'callbacks.beforeLabel', $value);
+    }
 
-    public function setTooltipsCallbacksBeforeTitle(string $value) { return $this->setting('tooltips', 'callbacks.beforeTitle', $value); }
+    public function setTooltipsCallbacksBeforeTitle(string $value)
+    {
+        return $this->setting('tooltips', 'callbacks.beforeTitle', $value);
+    }
 
-    public function setTooltipsCallbacksFooter(string $value) { return $this->setting('tooltips', 'callbacks.footer', $value); }
+    public function setTooltipsCallbacksFooter(string $value)
+    {
+        return $this->setting('tooltips', 'callbacks.footer', $value);
+    }
 
-    public function setTooltipsCallbacksLabel(string $value) { return $this->setting('tooltips', 'callbacks.label', $value); }
+    public function setTooltipsCallbacksLabel(string $value)
+    {
+        return $this->setting('tooltips', 'callbacks.label', $value);
+    }
 
-    public function setTooltipsCallbacksLabelColor(string $value) { return $this->setting('tooltips', 'callbacks.labelColor', $value); }
+    public function setTooltipsCallbacksLabelColor(string $value)
+    {
+        return $this->setting('tooltips', 'callbacks.labelColor', $value);
+    }
 
-    public function setTooltipsCallbacksTitle(string $value) { return $this->setting('tooltips', 'callbacks.title', $value); }
+    public function setTooltipsCallbacksTitle(string $value)
+    {
+        return $this->setting('tooltips', 'callbacks.title', $value);
+    }
 
-    public function setTooltipsEventsMousemove(string $value) { return $this->setting('tooltips', 'events.mousemove', $value); }
+    public function setTooltipsEventsMousemove(string $value)
+    {
+        return $this->setting('tooltips', 'events.mousemove', $value);
+    }
 
-    public function setTooltipsEventsTouchstart(string $value) { return $this->setting('tooltips', 'events.touchstart', $value); }
+    public function setTooltipsEventsTouchstart(string $value)
+    {
+        return $this->setting('tooltips', 'events.touchstart', $value);
+    }
 
-    public function setTooltipsEventsTouchmove(string $value) { return $this->setting('tooltips', 'events.touchmove', $value); }
+    public function setTooltipsEventsTouchmove(string $value)
+    {
+        return $this->setting('tooltips', 'events.touchmove', $value);
+    }
 
-    public function setTooltipsCaretPadding(string $value) { return $this->setting('tooltips', 'caretPadding', $value); }
+    public function setTooltipsCaretPadding(string $value)
+    {
+        return $this->setting('tooltips', 'caretPadding', $value);
+    }
 
-    public function setTooltipsCaretSize(string $value) { return $this->setting('tooltips', 'caretSize', $value); }
+    public function setTooltipsCaretSize(string $value)
+    {
+        return $this->setting('tooltips', 'caretSize', $value);
+    }
 
-    public function setTooltipsCornerRadius(string $value) { return $this->setting('tooltips', 'cornerRadius', $value); }
+    public function setTooltipsCornerRadius(string $value)
+    {
+        return $this->setting('tooltips', 'cornerRadius', $value);
+    }
 
-    public function setTooltipsCustom(string $value) { return $this->setting('tooltips', 'custom', $value); }
+    public function setTooltipsCustom(string $value)
+    {
+        return $this->setting('tooltips', 'custom', $value);
+    }
 
-    public function setTooltipsDisplayColors(string $value) { return $this->setting('tooltips', 'displayColors', $value); }
+    public function setTooltipsDisplayColors(string $value)
+    {
+        return $this->setting('tooltips', 'displayColors', $value);
+    }
 
-    public function setTooltipsEnabled(string $value) { return $this->setting('tooltips', 'enabled', $value); }
+    public function setTooltipsEnabled(string $value)
+    {
+        return $this->setting('tooltips', 'enabled', $value);
+    }
 
-    public function setTooltipsFooterAlign(string $value) { return $this->setting('tooltips', 'footerAlign', $value); }
+    public function setTooltipsFooterAlign(string $value)
+    {
+        return $this->setting('tooltips', 'footerAlign', $value);
+    }
 
-    public function setTooltipsFooterFontColor(string $value) { return $this->setting('tooltips', 'footerFontColor', $value); }
+    public function setTooltipsFooterFontColor(string $value)
+    {
+        return $this->setting('tooltips', 'footerFontColor', $value);
+    }
 
-    public function setTooltipsFooterFontStyle(string $value) { return $this->setting('tooltips', 'footerFontStyle', $value); }
+    public function setTooltipsFooterFontStyle(string $value)
+    {
+        return $this->setting('tooltips', 'footerFontStyle', $value);
+    }
 
-    public function setTooltipsFooterMarginTop(string $value) { return $this->setting('tooltips', 'footerMarginTop', $value); }
+    public function setTooltipsFooterMarginTop(string $value)
+    {
+        return $this->setting('tooltips', 'footerMarginTop', $value);
+    }
 
-    public function setTooltipsFooterSpacing(string $value) { return $this->setting('tooltips', 'footerSpacing', $value); }
+    public function setTooltipsFooterSpacing(string $value)
+    {
+        return $this->setting('tooltips', 'footerSpacing', $value);
+    }
 
-    public function setTooltipsIntersect(string $value) { return $this->setting('tooltips', 'intersect', $value); }
+    public function setTooltipsIntersect(string $value)
+    {
+        return $this->setting('tooltips', 'intersect', $value);
+    }
 
-    public function setTooltipsMode(string $value) { return $this->setting('tooltips', 'mode', $value); }
+    public function setTooltipsMode(string $value)
+    {
+        return $this->setting('tooltips', 'mode', $value);
+    }
 
-    public function setTooltipsMultiKeyBackground(string $value) { return $this->setting('tooltips', 'multiKeyBackground', $value); }
+    public function setTooltipsMultiKeyBackground(string $value)
+    {
+        return $this->setting('tooltips', 'multiKeyBackground', $value);
+    }
 
-    public function setTooltipsPosition(string $value) { return $this->setting('tooltips', 'position', $value); }
+    public function setTooltipsPosition(string $value)
+    {
+        return $this->setting('tooltips', 'position', $value);
+    }
 
-    public function setTooltipsTitleAlign(string $value) { return $this->setting('tooltips', 'titleAlign', $value); }
+    public function setTooltipsTitleAlign(string $value)
+    {
+        return $this->setting('tooltips', 'titleAlign', $value);
+    }
 
-    public function setTooltipsTitleFontColor(string $value) { return $this->setting('tooltips', 'titleFontColor', $value); }
+    public function setTooltipsTitleFontColor(string $value)
+    {
+        return $this->setting('tooltips', 'titleFontColor', $value);
+    }
 
-    public function setTooltipsTitleFontSize(string $value) { return $this->setting('tooltips', 'titleFontSize', $value); }
+    public function setTooltipsTitleFontSize(string $value)
+    {
+        return $this->setting('tooltips', 'titleFontSize', $value);
+    }
 
-    public function setTooltipsTitleFontStyle(string $value) { return $this->setting('tooltips', 'titleFontStyle', $value); }
+    public function setTooltipsTitleFontStyle(string $value)
+    {
+        return $this->setting('tooltips', 'titleFontStyle', $value);
+    }
 
-    public function setTooltipsTitleMarginBottom(string $value) { return $this->setting('tooltips', 'titleMarginBottom', $value); }
+    public function setTooltipsTitleMarginBottom(string $value)
+    {
+        return $this->setting('tooltips', 'titleMarginBottom', $value);
+    }
 
-    public function setTooltipsTitleSpacing(string $value) { return $this->setting('tooltips', 'titleSpacing', $value); }
+    public function setTooltipsTitleSpacing(string $value)
+    {
+        return $this->setting('tooltips', 'titleSpacing', $value);
+    }
 
-    public function setTooltipsXPadding(string $value) { return $this->setting('tooltips', 'xPadding', $value); }
+    public function setTooltipsXPadding(string $value)
+    {
+        return $this->setting('tooltips', 'xPadding', $value);
+    }
 
-    public function setTooltipsYPadding(string $value) { return $this->setting('tooltips', 'yPadding', $value); }
+    public function setTooltipsYPadding(string $value)
+    {
+        return $this->setting('tooltips', 'yPadding', $value);
+    }
+
+    /*
+     * Customs
+     */
+
+    public function setCustoms(array $values)
+    {
+        return $this->customs = $values;
+    }
 
     /*
      * Renders
@@ -971,18 +1486,22 @@ class ChartJs
     public function renderCanvas($width = null, $height = null)
     {
         $this->setDimensions($width, $height);
-        $canvas_id = ! $this->canvas_id ? 'id'.uniqid() : $this->canvas_id;
+        $canvas_id = !$this->canvas_id ? 'id'.uniqid() : $this->canvas_id;
         $json = $this->renderJson(true);
 
-        if (! isset($this->animation['duration']) || $this->animation['duration'] != 0) {
+        if (!isset($this->animation['duration']) || $this->animation['duration'] != 0) {
             $timeout_duration = static::$timeout_duration;
             static::$timeout_duration += 80;
         } else {
             $timeout_duration = 0;
         }
 
-        if ($this->width) $width = 'width="'.$this->width.'"';
-        if ($this->height) $height = 'height="'.$this->height.'"';
+        if ($this->width) {
+            $width = 'width="'.$this->width.'"';
+        }
+        if ($this->height) {
+            $height = 'height="'.$this->height.'"';
+        }
 
         $return['canvas'] = '
         <canvas '.$width.' '.$height.' id="'.$canvas_id.'"></canvas>  
@@ -1034,7 +1553,9 @@ class ChartJs
         ';
         $this->canvasId(null);
 
-        if (! $this->separate_canvas_and_js) $return = implode(' ', $return);
+        if (!$this->separate_canvas_and_js) {
+            $return = implode(' ', $return);
+        }
 
         return $return;
     }
@@ -1050,10 +1571,19 @@ class ChartJs
     {
 
         $array['type'] = $this->getType();
-        if (! $this->getXLabels() && ! $this->getYLabels()) $array['data']['labels'] = $this->getLabels();
-        if ($this->getXLabels()) $array['data']['xLabels'] = $this->getXLabels();
-        if ($this->getYLabels()) $array['data']['yLabels'] = $this->getYLabels();
+        if (!$this->getXLabels() && !$this->getYLabels()) {
+            $array['data']['labels'] = $this->getLabels();
+        }
+        if ($this->getXLabels()) {
+            $array['data']['xLabels'] = $this->getXLabels();
+        }
+        if ($this->getYLabels()) {
+            $array['data']['yLabels'] = $this->getYLabels();
+        }
+
         $array['data']['datasets'] = $this->getDatasets();
+
+        $array['data'] = array_merge($array['data'],$this->getCustoms());
 
         $array['options'] = $this->getOptions();
         $array['options']['animation'] = $this->getAnimation();
@@ -1061,12 +1591,16 @@ class ChartJs
         $array['options']['elements'] = $this->getElements();
         $array['options']['events'] = $this->getEvents();
         $array['options']['hover'] = $this->getHover();
-        if (count($this->getLayout()) > 0) $array['options']['layout'] = $this->getLayout();
+        if (count($this->getLayout()) > 0) {
+            $array['options']['layout'] = $this->getLayout();
+        }
         $array['options']['legend'] = $this->getLegend();
         $array['options']['plugins'] = $this->getPlugins();
         $array['options']['title'] = $this->getTitle();
 
-        if ($this->show_axes) $array['options']['scales'] = $this->getScales();
+        if ($this->show_axes) {
+            $array['options']['scales'] = $this->getScales();
+        }
         $array['options']['tooltips'] = $this->getTooltips();
 
         $array = $this->convertFunctions($array);
