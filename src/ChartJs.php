@@ -8,6 +8,10 @@ class ChartJs
 
     private $height;
 
+    private $canvasStyles = [];
+
+    private $canvasClasses = '';
+
     private $type;
 
     private $name;
@@ -176,6 +180,16 @@ class ChartJs
         $this->experimental_legend = $value;
 
         return $this;
+    }
+
+    public function setCanvasClasses(string $classes)
+    {
+        $this->canvasClasses = $classes;
+    }
+
+    public function setCanvasStyles(array $styles)
+    {
+        $this->canvasStyles = $styles;
     }
 
     /*
@@ -505,6 +519,7 @@ class ChartJs
         if (count($this->axes_ids[$this->current_axis]) == 0) {
             $this->addAxisId(null);
         } else {
+
             $this->setCurrentAxisId($id);
         }
 
@@ -635,6 +650,16 @@ class ChartJs
     public function setAxisTicksSuggestedMin(float $value)
     {
         return $this->setAxisSetting('ticks.suggestedMin', $value);
+    }
+
+    public function setAxisTicksSuggestedMax(float $value)
+    {
+        return $this->setAxisSetting('ticks.suggestedMax', $value);
+    }
+
+    public function setAxisTicksMinRotation(float $value)
+    {
+        return $this->setAxisSetting('ticks.minRotation', $value);
     }
 
     public function setAxisTicksAutoSkipPadding(float $value)
@@ -829,6 +854,16 @@ class ChartJs
     public function setDataPointRadius(int $value, bool $all_datasets = false)
     {
         return $this->setDataSetting('pointRadius', $value, $all_datasets);
+    }
+
+    public function setDataPointBorderColor(string $value, bool $all_datasets = false)
+    {
+        return $this->setDataSetting('pointBorderColor', $value, $all_datasets);
+    }
+
+    public function setDataPointBackgroundColor(string $value, bool $all_datasets = false)
+    {
+        return $this->setDataSetting('pointBackgroundColor', $value, $all_datasets);
     }
 
     public function setDataPointStyle(string $value, bool $all_datasets = false)
@@ -1485,6 +1520,7 @@ class ChartJs
 
     public function renderCanvas($width = null, $height = null)
     {
+    
         $this->setDimensions($width, $height);
         $canvas_id = !$this->canvas_id ? 'id'.uniqid() : $this->canvas_id;
         $json = $this->renderJson(true);
@@ -1502,9 +1538,14 @@ class ChartJs
         if ($this->height) {
             $height = 'height="'.$this->height.'"';
         }
+        $styles = '';
+        if (count($this->canvasStyles)) {
+            $styles = 'styles="'.implode(';', $this->canvasStyles).'"';
+        }
+
 
         $return['canvas'] = '
-        <canvas '.$width.' '.$height.' id="'.$canvas_id.'"></canvas>  
+        <canvas '.$width.' '.$height.' id="'.$canvas_id.'" '.$styles.' class="'.$this->canvasClasses.'"></canvas>  
 
         '.($this->experimental_legend ? '<div id="js-legend'.$canvas_id.'" class="chart-legend"></div> ' : '');
 
@@ -1583,7 +1624,7 @@ class ChartJs
 
         $array['data']['datasets'] = $this->getDatasets();
 
-        $array['data'] = array_merge($array['data'],$this->getCustoms());
+        $array['data'] = array_merge($array['data'], $this->getCustoms());
 
         $array['options'] = $this->getOptions();
         $array['options']['animation'] = $this->getAnimation();
