@@ -65,6 +65,7 @@ class ChartJs
         'options.tooltips.callbacks.beforeTitle'  => 'tooltipItems, data',
         'options.tooltips.callbacks.footer'       => 'tooltipItems, data',
         'options.tooltips.callbacks.label'        => 'tooltipItems, data',
+        'options.tooltips.filter'                 => 'tooltipItems, data',
         'options.tooltips.callbacks.labelColor'   => 'tooltipItems, data',
         'options.tooltips.callbacks.title'        => 'tooltipItems, data',
     ];
@@ -816,6 +817,16 @@ class ChartJs
         return $this->setDataSetting('data', $value);
     }
 
+    public function setDataCustoms($value, bool $all_datasets = false)
+    {
+        return $this->setDataSetting('customs', $value, $all_datasets);
+    }
+
+    public function setDataStack($value, bool $all_datasets = false)
+    {
+        return $this->setDataSetting('stack', $value, $all_datasets);
+    }
+
     public function setDataYAxisId($value, bool $all_datasets = false)
     {
         return $this->setDataSetting('yAxisID', $value, $all_datasets);
@@ -1295,12 +1306,12 @@ class ChartJs
         return $this->setting('tooltips', 'bodyFontColor', $value);
     }
 
-    public function setTooltipsBodyFontSize(string $value)
+    public function setTooltipsBodyFontSize(int $value)
     {
         return $this->setting('tooltips', 'bodyFontSize', $value);
     }
 
-    public function setTooltipsBodySpacing(string $value)
+    public function setTooltipsBodySpacing(int $value)
     {
         return $this->setting('tooltips', 'bodySpacing', $value);
     }
@@ -1310,7 +1321,7 @@ class ChartJs
         return $this->setting('tooltips', 'borderColor', $value);
     }
 
-    public function setTooltipsBorderWidth(string $value)
+    public function setTooltipsBorderWidth(int $value)
     {
         return $this->setting('tooltips', 'borderWidth', $value);
     }
@@ -1358,6 +1369,11 @@ class ChartJs
     public function setTooltipsCallbacksFooter(string $value)
     {
         return $this->setting('tooltips', 'callbacks.footer', $value);
+    }
+
+    public function setTooltipsFilter(string $value)
+    {
+        return $this->setting('tooltips', 'filter', $value);
     }
 
     public function setTooltipsCallbacksLabel(string $value)
@@ -1475,7 +1491,7 @@ class ChartJs
         return $this->setting('tooltips', 'titleFontColor', $value);
     }
 
-    public function setTooltipsTitleFontSize(string $value)
+    public function setTooltipsTitleFontSize(int $value)
     {
         return $this->setting('tooltips', 'titleFontSize', $value);
     }
@@ -1485,22 +1501,22 @@ class ChartJs
         return $this->setting('tooltips', 'titleFontStyle', $value);
     }
 
-    public function setTooltipsTitleMarginBottom(string $value)
+    public function setTooltipsTitleMarginBottom(int $value)
     {
         return $this->setting('tooltips', 'titleMarginBottom', $value);
     }
 
-    public function setTooltipsTitleSpacing(string $value)
+    public function setTooltipsTitleSpacing(int $value)
     {
         return $this->setting('tooltips', 'titleSpacing', $value);
     }
 
-    public function setTooltipsXPadding(string $value)
+    public function setTooltipsXPadding(int $value)
     {
         return $this->setting('tooltips', 'xPadding', $value);
     }
 
-    public function setTooltipsYPadding(string $value)
+    public function setTooltipsYPadding(int $value)
     {
         return $this->setting('tooltips', 'yPadding', $value);
     }
@@ -1520,7 +1536,7 @@ class ChartJs
 
     public function renderCanvas($width = null, $height = null)
     {
-    
+
         $this->setDimensions($width, $height);
         $canvas_id = !$this->canvas_id ? 'id'.uniqid() : $this->canvas_id;
         $json = $this->renderJson(true);
