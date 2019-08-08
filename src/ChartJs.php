@@ -418,6 +418,8 @@ class ChartJs
     public function getDatasets()
     {
         $raw_datasets = $this->datasets;
+        $return_datasets = [];
+        
         foreach ($raw_datasets as $key => $dataset) {
             if ($this->use_same_color_background_and_border) {
                 if (isset($dataset['backgroundColor']) && !isset($dataset['borderColor'])) {
@@ -430,11 +432,12 @@ class ChartJs
                     $dataset['backgroundColor'] = $this->default_charts_colors[count($this->default_charts_colors) - 1];
                 }
             }
+
             unset($raw_datasets[$key]);
-            $raw_datasets[] = $dataset;
+            $return_datasets[] = $dataset;
         }
 
-        return $raw_datasets;
+        return $return_datasets;
     }
 
     public function getType()
