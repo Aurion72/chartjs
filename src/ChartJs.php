@@ -645,6 +645,11 @@ class ChartJs
     {
         return $this->setAxisSetting('ticks.min', $value);
     }
+    
+    public function setAxisTicksDisplay(bool $value)
+    {
+        return $this->setAxisSetting('ticks.display', $value);
+    }
 
     public function setAxisTicksBeginAtZero(bool $value)
     {
@@ -705,6 +710,11 @@ class ChartJs
      * Axis GridLine
      * */
 
+    public function setAxisGridLinesDisplay(bool $value)
+    {
+        return $this->setAxisSetting('gridLines.display', $value);
+    }
+    
     public function setAxisGridLinesColor(string $value)
     {
         return $this->setAxisSetting('gridLines.color', $value);
