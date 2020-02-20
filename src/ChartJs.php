@@ -1592,6 +1592,8 @@ class ChartJs
         json'.$canvas_id.' = JSONfn.stringify(json'.$canvas_id.');
         json'.$canvas_id.' = JSONfn.parse(json'.$canvas_id.'); 
         
+        globalJson'.$canvas_id.' = json'.$canvas_id.';
+        
         
         if('.($this->debug_mode ? 1 : 0).' == 1) console.log(json'.$canvas_id.');  
         
