@@ -41,33 +41,37 @@ class ChartJs
 
     private $plugins;
 
+    private $registeredPlugins = [];
+
     private $title;
 
     private $tooltips;
 
     private $customs = [];
 
+    private $global_customs = [];
+
     private $static_function_attributes = [
-        'options.animation.onComplete'            => 'animation',
-        'options.animation.onProgress'            => 'animation',
-        'options.hover.onHover'                   => 'chart',
-        'options.legendCallback'                  => 'chart',
-        'options.legend.onClick'                  => 'chart',
-        'options.legend.labels.generateLabels'    => 'chart',
-        'options.legend.onHover'                  => 'chart',
-        'options.tooltips.callbacks.afterBody'    => 'tooltipItems, data',
-        'options.tooltips.callbacks.afterFooter'  => 'tooltipItems, data',
-        'options.tooltips.callbacks.afterLabel'   => 'tooltipItems, data',
-        'options.tooltips.callbacks.afterTitle'   => 'tooltipItems, data',
-        'options.tooltips.callbacks.beforeBody'   => 'tooltipItems, data',
+        'options.animation.onComplete' => 'animation',
+        'options.animation.onProgress' => 'animation',
+        'options.hover.onHover' => 'chart',
+        'options.legendCallback' => 'chart',
+        'options.legend.onClick' => 'chart',
+        'options.legend.labels.generateLabels' => 'chart',
+        'options.legend.onHover' => 'chart',
+        'options.tooltips.callbacks.afterBody' => 'tooltipItems, data',
+        'options.tooltips.callbacks.afterFooter' => 'tooltipItems, data',
+        'options.tooltips.callbacks.afterLabel' => 'tooltipItems, data',
+        'options.tooltips.callbacks.afterTitle' => 'tooltipItems, data',
+        'options.tooltips.callbacks.beforeBody' => 'tooltipItems, data',
         'options.tooltips.callbacks.beforeFooter' => 'tooltipItems, data',
-        'options.tooltips.callbacks.beforeLabel'  => 'tooltipItems, data',
-        'options.tooltips.callbacks.beforeTitle'  => 'tooltipItems, data',
-        'options.tooltips.callbacks.footer'       => 'tooltipItems, data',
-        'options.tooltips.callbacks.label'        => 'tooltipItems, data',
-        'options.tooltips.filter'                 => 'tooltipItems, data',
-        'options.tooltips.callbacks.labelColor'   => 'tooltipItems, data',
-        'options.tooltips.callbacks.title'        => 'tooltipItems, data',
+        'options.tooltips.callbacks.beforeLabel' => 'tooltipItems, data',
+        'options.tooltips.callbacks.beforeTitle' => 'tooltipItems, data',
+        'options.tooltips.callbacks.footer' => 'tooltipItems, data',
+        'options.tooltips.callbacks.label' => 'tooltipItems, data',
+        'options.tooltips.filter' => 'tooltipItems, data',
+        'options.tooltips.callbacks.labelColor' => 'tooltipItems, data',
+        'options.tooltips.callbacks.title' => 'tooltipItems, data',
     ];
 
     private $dynamic_function_attributes = [
@@ -191,6 +195,16 @@ class ChartJs
     public function setCanvasStyles(array $styles)
     {
         $this->canvasStyles = $styles;
+    }
+
+    public function registerPlugin(string $plugin)
+    {
+        $this->registeredPlugins[] = $plugin;
+    }
+
+    public function unregisterPlugin(string $plugin)
+    {
+        unset($this->registeredPlugins[array_search($plugin, $this->registeredPlugins)]);
     }
 
     /*
@@ -415,11 +429,21 @@ class ChartJs
         return $this->customs;
     }
 
+    public function getGlobalCustoms()
+    {
+        return $this->global_customs;
+    }
+
+    public function getRegisteredPlugins()
+    {
+        return $this->registeredPlugins;
+    }
+
     public function getDatasets()
     {
         $raw_datasets = $this->datasets;
         $return_datasets = [];
-        
+
         foreach ($raw_datasets as $key => $dataset) {
             if ($this->use_same_color_background_and_border) {
                 if (isset($dataset['backgroundColor']) && !isset($dataset['borderColor'])) {
@@ -483,6 +507,11 @@ class ChartJs
         $this->options['decimal'] = $value;
 
         return $this;
+    }
+
+    public function addRawOptions(array $options)
+    {
+        $this->options = array_merge($this->options, $options);
     }
 
     /*
@@ -645,7 +674,7 @@ class ChartJs
     {
         return $this->setAxisSetting('ticks.min', $value);
     }
-    
+
     public function setAxisTicksDisplay(bool $value)
     {
         return $this->setAxisSetting('ticks.display', $value);
@@ -714,7 +743,7 @@ class ChartJs
     {
         return $this->setAxisSetting('gridLines.display', $value);
     }
-    
+
     public function setAxisGridLinesColor(string $value)
     {
         return $this->setAxisSetting('gridLines.color', $value);
@@ -1543,6 +1572,11 @@ class ChartJs
         return $this->customs = $values;
     }
 
+    public function setGlobalCustoms(array $values)
+    {
+        return $this->global_customs = $values;
+    }
+
     /*
      * Renders
      * */
@@ -1574,53 +1608,56 @@ class ChartJs
 
 
         $return['canvas'] = '
-        <canvas '.$width.' '.$height.' id="'.$canvas_id.'" '.$styles.' class="'.$this->canvasClasses.'"></canvas>  
+        <canvas '.$width.' '.$height.' id="'.$canvas_id.'" '.$styles.' class="'.$this->canvasClasses.'"></canvas>
 
         '.($this->experimental_legend ? '<div id="js-legend'.$canvas_id.'" class="chart-legend"></div> ' : '');
 
-        $return['js'] = ' 
-        <script type="application/javascript">  
+        $return['js'] = '
+        <script type="application/javascript">
         $(document).ready(function(){
-            if(typeof(JSONfn) === "undefined"){  
+            if(typeof(JSONfn) === "undefined"){
              console.log("You must install JSONfn in order to use callback functions. https://github.com/vkiryukhin/jsonfn");
-         } 
-         
-         
-         
-         
+         }
+
+
+
+
         var json'.$canvas_id.' = '.$json.';
         json'.$canvas_id.' = JSONfn.stringify(json'.$canvas_id.');
-        json'.$canvas_id.' = JSONfn.parse(json'.$canvas_id.'); 
-        
+        json'.$canvas_id.' = JSONfn.parse(json'.$canvas_id.');
+
         globalJson'.$canvas_id.' = json'.$canvas_id.';
-        
-        
-        if('.($this->debug_mode ? 1 : 0).' == 1) console.log(json'.$canvas_id.');  
-        
-         
+
+        if('.($this->debug_mode ? 1 : 0).' == 1) console.log(json'.$canvas_id.');
+            if(typeof json'.$canvas_id.'.plugins != "undefined"){
+                json'.$canvas_id.'.plugins = json'.$canvas_id.'.plugins.map(function(plugin){
+                    return window[plugin];
+                })
+            }
+
             setTimeout(function(){
                 var myChart = new Chart($("#'.$canvas_id.'"),json'.$canvas_id.');
-                '.$canvas_id.' = myChart; 
-                
+                '.$canvas_id.' = myChart;
+
                 if('.($this->experimental_legend ? 1 : 0).' == 1){
                 document.getElementById("js-legend'.$canvas_id.'").innerHTML = myChart.generateLegend();
-                
+
                 $("#js-legend'.$canvas_id.' > ul > li").on("click", function (e) {
                     var index = $(this).index();
                     $(this).toggleClass("strike");
-                    
+
                     var curr = myChart.data.datasets[0]._meta[myChart.id].data[index];
-    
+
                     curr.hidden = !curr.hidden;
                     myChart.update();
                 });
-                
+
                 }
-                
-                }, '.$timeout_duration.');  
+
+                }, '.$timeout_duration.');
             });
-         
-        
+
+
         </script>
         ';
         $this->canvasId(null);
@@ -1656,6 +1693,14 @@ class ChartJs
         $array['data']['datasets'] = $this->getDatasets();
 
         $array['data'] = array_merge($array['data'], $this->getCustoms());
+
+        foreach ($this->getGlobalCustoms() as $index => $value) {
+            $array[$index] = $value;
+        }
+
+        foreach ($this->getRegisteredPlugins() as $plugin) {
+            $array['plugins'][] = $plugin;
+        }
 
         $array['options'] = $this->getOptions();
         $array['options']['animation'] = $this->getAnimation();
