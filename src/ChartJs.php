@@ -1137,10 +1137,13 @@ class ChartJs
         return $this;
     }
 
-    public function removeEvent($event)
+     public function removeEvent($event)
     {
         if ($this->getEvents($event) !== false) {
-            unset($this->events[$event]);
+            $key = array_search($event, $this->events);
+            if(array_key_exists($key, $this->events)){
+                unset($this->events[$key]);
+            }
         }
 
         return $this;
